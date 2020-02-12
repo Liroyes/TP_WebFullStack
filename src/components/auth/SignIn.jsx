@@ -58,7 +58,6 @@ export default function SignIn() {
     }).catch(err => {
         console.error("AUTH ERROR !")
         console.log(err)
-        
     }); 
   }
   return (

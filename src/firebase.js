@@ -1,4 +1,4 @@
-
+import React from 'react';
 import * as firebase from "firebase/app";
 import "firebase/auth";
 
@@ -11,11 +11,33 @@ const firebaseApp = firebase.initializeApp({
   messagingSenderId: process.env.REACT_APP_FIREBASE_SENDER_ID
 });
 
-// class firebaseApp {
-//     constructor() {
-//         debugger;
-//         firebase.initializeApp(configFirebase);
-//     }
-// }
+// #region API
+/***************
+ * FireBase API
+ ***************/
+const fireBaseAPI = {
+  // *** Auth API ***
+  getCurrentUser: function() {
+    return firebaseApp.auth().currentUser;
+  },
 
-export default firebaseApp;
+  createUserWithEmailAndPassword: function (email, password) {
+    return firebaseApp.auth().createUserWithEmailAndPassword(email, password)
+  },
+
+  signInWithEmailAndPassword: function (email, password) { 
+    return firebaseApp.auth().signInWithEmailAndPassword(email, password)
+  },
+
+  signOut: function() {
+    return firebaseApp.auth().signOut();
+  }
+}
+
+// #endregion API
+
+
+const FirebaseContext = React.createContext(fireBaseAPI);
+
+export default FirebaseContext;
+export {firebaseApp, fireBaseAPI};
