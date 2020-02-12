@@ -1,25 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
+import firebaseApp from './firebase'
+import * as ROUTES from "./constants/routePath";
+// #region Components Import
+import Home from './components/app/Home';
+import SignIn from './components/auth/SignIn';
+import SignUp from './components/auth/SignUp';
+
+// #endregion Components
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <Router>
+      <Route exact path={ROUTES.HOME} component={Home} />
+      <Route path={ROUTES.SIGN_IN} component={SignIn} />
+      <Route path={ROUTES.SIGN_UP} component={SignUp} />
+    </Router>
   );
 }
 
