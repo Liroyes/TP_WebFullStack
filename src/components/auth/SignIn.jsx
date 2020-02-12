@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import FirebaseContext from '../../firebase';
+import FirebaseContext, {fireBaseAPI} from '../../firebase';
 
 
 const useStyles = makeStyles(theme => ({
@@ -37,17 +37,31 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignIn() {
   const classes = useStyles();
-  const [user, setUser] = useState({remember: true})
+  const [user, setUser] = useState({remember: false, email:'', pswd: ''})
 
   function handleChange(eventValue, attribute) {
-      console.log(eventValue, attribute)
+    console.log(eventValue, attribute)
     setUser({...user, [attribute]: eventValue});
   }
 
+  function formIsValid() {
+      return user.email && user.psw;
+  }
+  const value = useContext(FirebaseContext);
+  function handleSubmit( event) {
+    event.preventDefault();
+
+    
+    fireBaseAPI.signInWithEmailAndPassword(user.email, user.pswd).then(res => {
+        console.log("AUTH SUCCESS !")
+        console.log(res)
+    }).catch(err => {
+        console.error("AUTH ERROR !")
+        console.log(err)
+        
+    }); 
+  }
   return (
-    <FirebaseContext.Consumer>
-        {firebase => {
-            return (
                 <Container component="main" maxWidth="xs">
                     <CssBaseline />
                     <div className={classes.paper}>
@@ -57,7 +71,8 @@ export default function SignIn() {
                         <Typography component="h1" variant="h5">
                         Sign in
                         </Typography>
-                        <form className={classes.form} noValidate>
+                        <form className={classes.form} noValidate
+                        onSubmit={(e => handleSubmit(e))}>
                         <TextField
                             variant="outlined"
                             margin="normal"
@@ -99,6 +114,7 @@ export default function SignIn() {
                             variant="contained"
                             color="primary"
                             className={classes.submit}
+                            // TODO disabled
                         >
                             Sign In
                         </Button>
@@ -117,9 +133,6 @@ export default function SignIn() {
                         </form>
                     </div>
                 </Container>
-            )
-        }}
         
-    </FirebaseContext.Consumer>
   );
 }
