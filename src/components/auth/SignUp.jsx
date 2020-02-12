@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignUp() {
   const classes = useStyles();
-  const [user, setUser] = useState({remember: false, email:'', pswd: ''})
+  const [user, setUser] = useState({remember: false, email:'', pswd: '', pswdConfirm: ''})
 
   function handleChange(eventValue, attribute) {
     console.log(eventValue, attribute)
@@ -45,20 +45,36 @@ export default function SignUp() {
   }
 
   function formIsValid() {
-      return user.email && user.psw;
+    if(!user.email) {
+        alert('please enter your email');
+        return false;
+    }
+    if(!user.pswd) {
+        alert('please enter your password');
+        return false;
+    }
+    if(!user.pswdConfirm) {
+        alert('please enter your password confirmation');
+        return false;
+    }
+    if(user.pswdConfirm !== user.pswd) {
+        alert('your both password didn\'t match');
+        return false;
+    }
+    return true;
   }
   const value = useContext(FirebaseContext);
   function handleSubmit( event) {
     event.preventDefault();
-
-    
-    fireBaseAPI.createUserWithEmailAndPassword(user.email, user.pswd).then(res => {
-        console.log("Sign Up SUCCESS !")
-        console.log(res)
-    }).catch(err => {
-        console.error("sSign Up ERROR !")
-        console.log(err)
-    }); 
+    if (formIsValid) {
+        fireBaseAPI.createUserWithEmailAndPassword(user.email, user.pswd).then(res => {
+            console.log("Sign Up SUCCESS !")
+            console.log(res)
+        }).catch(err => {
+            console.error("Sign Up ERROR !")
+            console.log(err)
+        }); 
+    }
   }
   return (
     <Container component="main" maxWidth="xs">
