@@ -1,19 +1,15 @@
-import React, {useState, useContext} from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import FirebaseContext, {fireBaseAPI} from '../../firebase';
-
+import {fireBaseAPI} from '../../services/firebase';
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -40,8 +36,20 @@ export default function SignUp() {
   const [user, setUser] = useState({remember: false, email:'', pswd: '', pswdConfirm: ''})
 
   function handleChange(eventValue, attribute) {
-    console.log(eventValue, attribute)
     setUser({...user, [attribute]: eventValue});
+  }
+
+  function handleSubmit( event) {
+    event.preventDefault();
+    if (formIsValid) {
+        fireBaseAPI.createUserWithEmailAndPassword(user.email, user.pswd).then(res => {
+            console.log("Sign Up SUCCESS !")
+            console.log(res)
+        }).catch(err => {
+            console.error("Sign Up ERROR !")
+            console.log(err)
+        }); 
+    }
   }
 
   function formIsValid() {
@@ -63,19 +71,7 @@ export default function SignUp() {
     }
     return true;
   }
-  const value = useContext(FirebaseContext);
-  function handleSubmit( event) {
-    event.preventDefault();
-    if (formIsValid) {
-        fireBaseAPI.createUserWithEmailAndPassword(user.email, user.pswd).then(res => {
-            console.log("Sign Up SUCCESS !")
-            console.log(res)
-        }).catch(err => {
-            console.error("Sign Up ERROR !")
-            console.log(err)
-        }); 
-    }
-  }
+
   return (
     <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -144,8 +140,8 @@ export default function SignUp() {
                 </Link>
                 </Grid> */}
                 <Grid item>
-                <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                <Link to="/SignIn" variant="body2">
+                    {"Already have an account? Sign In"}
                 </Link>
                 </Grid>
             </Grid>
